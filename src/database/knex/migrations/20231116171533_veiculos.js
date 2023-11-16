@@ -3,7 +3,7 @@ exports.up = (knex) =>
     table.bigIncrements('id')
     table.bigInteger('placa').notNullable()
     table.bigInteger('tipo').notNullable()
-    table.bigInteger('equipe_id').notNullable().comment("ultima equipe a usar o veiculo")
+    table.bigInteger('equipe_id').references("id").inTable("equipes").notNullable().comment("ultima equipe a usar o veiculo")
   });
 
 exports.down = (knex) => knex.schema.dropTable("veiculos");
