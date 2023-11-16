@@ -1,15 +1,12 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = function(knex) {
-  
-};
+exports.up = (knex) =>
+  knex.schema.createTable("obras", (table) => {
+    table.bigIncrements("id");
+    table.string("projeto").notNullable();
+    table.string("descricao").notNullable();
+    table.string("status").notNullable();
+    table.string("carteira").notNullable();
+    table.string("cidade").notNullable();
+    table.string("utd").notNullable();
+  });
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = function(knex) {
-  
-};
+exports.down = (knex) => knex.schema.dropTable("obras");

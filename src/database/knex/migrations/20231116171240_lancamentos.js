@@ -1,15 +1,9 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = function(knex) {
-  
-};
+exports.up = (knex) =>
+  knex.schema.createTable("lancamentos", (table) => {
+    table.bigIncrements('id')
+    table.bigInteger('obras_turnos_id').notNullable()
+    table.bigInteger('servico_id').notNullable()
+    table.float('quantidade').notNullable()
+  });
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = function(knex) {
-  
-};
+exports.down = (knex) => knex.schema.dropTable("lancamentos");

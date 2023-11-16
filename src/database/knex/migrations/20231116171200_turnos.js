@@ -1,15 +1,15 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = function(knex) {
-  
-};
+exports.up = (knex) =>
+  knex.schema.createTable("turnos", (table) => {
+    table.bigIncrements("id");
+    table.bigInteger("equipe_id").notNullable();
+    table.date("data").notNullable();
+    table.time("inicio_turno").notNullable();
+    table.time("fim_turno").notNullable();
+    table.time("inicio_deslocamento").notNullable();
+    table.time("fim_deslocamento").notNullable();
+    table.float("hodometro_inicial").notNullable();
+    table.float("hodometro_final").notNullable();
+    table.bigInteger("veiculo_id").notNullable();
+  });
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = function(knex) {
-  
-};
+exports.down = (knex) => knex.schema.dropTable("turnos");

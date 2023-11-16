@@ -1,15 +1,10 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = function(knex) {
-  
-};
+exports.up = (knex) =>
+  knex.schema.createTable("colaboradores", (table) => {
+    table.bigIncrements("id");
+    table.string("nome").notNullable();
+    table.bigInteger("cpf").notNullable();
+    table.bigInteger("equipe_id");
+    table.string("tipo").notNullable();
+  });
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = function(knex) {
-  
-};
+exports.down = (knex) => knex.schema.dropTable("colaboradores");

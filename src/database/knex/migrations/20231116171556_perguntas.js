@@ -1,15 +1,11 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.up = function(knex) {
-  
-};
+exports.up = (knex) =>
+  knex.schema.createTable("perguntas", (table) => {
+    table.bigIncrements('id')
+    table.string('pergunta_resposta').notNullable()
+    table.string('tipo').notNullable()
+    table.string('categoria')
+    table.date('data_inicial').notNullable()
+    table.date('data_final')
+  });
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-exports.down = function(knex) {
-  
-};
+exports.down = (knex) => knex.schema.dropTable("perguntas");
