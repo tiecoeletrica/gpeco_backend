@@ -4,7 +4,7 @@ exports.up = (knex) =>
     table.string('pergunta_resposta').notNullable()
     table.string('tipo').notNullable()
     table.string('categoria')
-    table.date('data_inicial').notNullable()
+    table.date('data_inicial').default(knex.fn.now())
     table.date('data_final')
   });
 
