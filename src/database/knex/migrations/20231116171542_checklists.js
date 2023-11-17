@@ -4,7 +4,7 @@ exports.up = (knex) =>
     table.string('tipo_checklist').notNullable().comment("smc, veicular ou epi")
     table.bigInteger('pergunta_id').notNullable()
     table.bigInteger('colaborador_id')
-    table.bigInteger('turno_id').references("id").inTable("turnos").notNullable()
+    table.bigInteger('turno_id').references("id").inTable("turnos").notNullable().onDelete("CASCADE")
     table.string('codigo_camera').comment("para o smc")
     table.string('defeito').comment("para o smc")
   });
