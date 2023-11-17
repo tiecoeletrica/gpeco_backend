@@ -7,6 +7,7 @@ exports.up = (knex) =>
     table.bigInteger("coordenador_id").references("id").inTable("colaboradores");
     table.string("contrato").notNullable();
     table.string("tipo").notNullable();
+    table.boolean("status").notNullable().default(1);
   });
 
 exports.down = (knex) => knex.schema.dropTable("equipes");
