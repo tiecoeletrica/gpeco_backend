@@ -16,7 +16,7 @@ const  veiculosRouter = require("./veiculos.routes")
 const routes = Router();
 
 //fala pra o aplicativo usar o arquivo users.routes.js pra acessar os métodos
-routes.use("/auth", atutenticacaoRoutes);
+routes.use("/autenticacao", atutenticacaoRoutes);
 routes.use("/colaboradores", colaboradoresRouter);
 routes.use("/equipes", equipesRouter);
 routes.use("/obras", obrasRouter);

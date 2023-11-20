@@ -31,8 +31,6 @@ app.use((error, request, response, next)=>{
 
 })
 
-
-
 const port = 3000
 
 app.listen(port, () => console.log(`O server está rodando na porta ${port}`))
