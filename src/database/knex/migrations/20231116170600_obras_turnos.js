@@ -5,6 +5,7 @@ exports.up = (knex) =>
     table.bigInteger("turno_id").references("id").inTable("turnos").notNullable().onDelete("CASCADE");
     table.string("fase_da_obra").notNullable();
     table.string("retorno_campo").notNullable();
+    table.boolean("fora_programacao").notNullable();
   });
 
 exports.down = (knex) => knex.schema.dropTable("obras_turnos");
