@@ -17,16 +17,17 @@ class VeiculosController {
         })
     }
 
-    async delete(request, response) {
+    async update(request, response) {
        
-        return response.status(201).json("Nota deletada")
+        return response.status(201).json()
     }
 
     async index(request, response) {
         
         
-        response.status(200).json(notesWhithTags)
+        response.status(200).json()
     }
+
 }
 
 

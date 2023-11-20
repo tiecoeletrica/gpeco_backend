@@ -10,6 +10,12 @@ class ColaboradoresController {
         response.status(201).json();
     }
 
+    async index(request, response) {
+        
+
+        response.status(201).json();
+    }
+
     async show(request, response) {
         
         return response.status(200).json({
@@ -17,15 +23,10 @@ class ColaboradoresController {
         })
     }
 
-    async delete(request, response) {
-       
-        return response.status(201).json("Nota deletada")
-    }
-
-    async index(request, response) {
+    async update(request, response) {
         
         
-        response.status(200).json(notesWhithTags)
+        response.status(200).json()
     }
 }
 

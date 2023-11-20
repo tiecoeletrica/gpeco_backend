@@ -10,23 +10,7 @@ class AutenticacaoController {
         response.status(201).json();
     }
 
-    async show(request, response) {
-        
-        return response.status(200).json({
-           
-        })
-    }
-
-    async delete(request, response) {
-       
-        return response.status(201).json("Nota deletada")
-    }
-
-    async index(request, response) {
-        
-        
-        response.status(200).json(notesWhithTags)
-    }
+    
 }
 
 

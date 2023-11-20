@@ -25,7 +25,13 @@ class ProgramacoesController {
     async index(request, response) {
         
         
-        response.status(200).json(notesWhithTags)
+        response.status(200).json()
+    }
+
+    async update(request, response) {
+        
+        
+        response.status(200).json()
     }
 }
 
