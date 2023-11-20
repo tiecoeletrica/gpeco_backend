@@ -1,14 +1,15 @@
 const { Router } = require("express")
 
-const NotesController = require("../controllers/NotesController")
+const ProgramacoesController = require("../controllers/ProgramacoesController")
 
-const notesController = new NotesController()
+const programacoesController = new ProgramacoesController()
 
-const notesRoutes = Router()
+const programacoesRoutes = Router()
 
-notesRoutes.post("/:user_id", notesController.create)
-notesRoutes.get("/:id", notesController.show)
-notesRoutes.delete("/:id", notesController.delete)
-notesRoutes.get("/", notesController.index)
+programacoesRoutes.post("/", programacoesController.create)
+programacoesRoutes.get("/:id", programacoesController.show)
+programacoesRoutes.delete("/:id", programacoesController.delete)
+programacoesRoutes.get("/", programacoesController.index)
+programacoesRoutes.put("/:id", programacoesController.update)
 
-module.exports = notesRoutes;
+module.exports = programacoesRoutes;

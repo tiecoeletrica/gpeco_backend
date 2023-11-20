@@ -1,14 +1,15 @@
 const { Router } = require("express")
 
-const NotesController = require("../controllers/NotesController")
+const Obras_TurnosController = require("../controllers/Obras_TurnosController")
 
-const notesController = new NotesController()
+const obras_TurnosController = new Obras_TurnosController()
 
-const notesRoutes = Router()
+const obras_TurnosRoutes = Router()
 
-notesRoutes.post("/:user_id", notesController.create)
-notesRoutes.get("/:id", notesController.show)
-notesRoutes.delete("/:id", notesController.delete)
-notesRoutes.get("/", notesController.index)
+obras_TurnosRoutes.post("/", obras_TurnosController.create)
+obras_TurnosRoutes.get("/:id", obras_TurnosController.show)
+obras_TurnosRoutes.delete("/:id", obras_TurnosController.delete)
+obras_TurnosRoutes.get("/", obras_TurnosController.index)
+obras_TurnosRoutes.put("/:id", obras_TurnosController.update)
 
-module.exports = notesRoutes;
+module.exports = obras_TurnosRoutes;
