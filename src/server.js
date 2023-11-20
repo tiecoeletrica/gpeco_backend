@@ -2,15 +2,15 @@ require("express-async-errors") //Seta como requisito do server
 
 const express = require("express")
 
-//const AppError = require("./utils/AppError") //importa pasta que trata os erros
+const AppError = require("./utils/AppError") //importa pasta que trata os erros
 
-//const routes = require("./routes")//importação das rotas. Já pega o index por padrão e a partir dele manda pro resto
+const routes = require("./routes")//importação das rotas. Já pega o index por padrão e a partir dele manda pro resto
 
 const app = express()
 
 app.use(express.json())//diz para o node que as informações vão vir em formato de json
 
-//app.use(routes) //direciona do server para a pasta de rotas
+app.use(routes) //direciona do server para a pasta de rotas
 
 
 app.use((error, request, response, next)=>{

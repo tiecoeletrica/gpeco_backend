@@ -2,7 +2,7 @@
 const { Router } = require("express");
 
 //rota para a rota do usuário
-const  authRouter  = require("./autenticacao.routes");
+const  atutenticacaoRoutes  = require("./autenticacao.routes");
 const  colaboradoresRouter  = require("./colaboradores.routes");
 const  equipesRouter = require("./equipes.routes")
 const  obrasRouter = require("./obras.routes")
@@ -16,7 +16,7 @@ const  veiculosRouter = require("./veiculos.routes")
 const routes = Router();
 
 //fala pra o aplicativo usar o arquivo users.routes.js pra acessar os métodos
-routes.use("/auth", authRouter);
+routes.use("/auth", atutenticacaoRoutes);
 routes.use("/colaboradores", colaboradoresRouter);
 routes.use("/equipes", equipesRouter);
 routes.use("/obras", obrasRouter);
