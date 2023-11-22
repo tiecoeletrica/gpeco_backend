@@ -52,9 +52,19 @@ class EquipesController {
     }
 
     async index(request, response) {
-        
+        const {lider_id, supervisor_id, coordenador_id} = request.query
 
-        response.status(201).json();
+        let filter = {};
+
+        if (lider_id) filter.lider_id = lider_id;
+        if (supervisor_id) filter.supervisor_id = supervisor_id;
+        if (coordenador_id) filter.coordenador_id = coordenador_id;
+
+        const equipes = await knex("equipes")
+            .select(["id","equipe","tipo","lider_id","coordenador_id","supervisor_id","contrato"])
+            .where(filter)
+
+        response.status(200).json(equipes);
     }
 
     async show(request, response) {
