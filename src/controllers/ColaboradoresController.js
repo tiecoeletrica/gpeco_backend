@@ -48,8 +48,9 @@ class ColaboradoresController {
         const {id} = request.params;
         
         const [colaborador] = await knex("colaboradores").where({id})
+        console.log(colaborador)
 
-        if(!colaborador.length < 1){
+        if(!colaborador){
             throw new AppError("Usuário não encontrado")
         }
         
@@ -62,7 +63,6 @@ class ColaboradoresController {
             throw new AppError("Informe a senha antiga e a senha nova")
         }
 
-        console.log(colaborador)
         
         const comparacaoSenha = await compare(senhaAntiga,colaborador.senha)
         
