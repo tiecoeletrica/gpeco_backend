@@ -32,14 +32,15 @@ class ColaboradoresController {
     async index(request, response) {
         const usuarios = await knex("colaboradores").select(["id","nome","cpf","email","tipo"])
 
-        response.status(201).json(usuarios);
+        response.status(200).json(usuarios);
     }
 
     async show(request, response) {
+        const { id } = request.params
+
+        const colaborador = await knex("colaboradores").where({id})
         
-        return response.status(200).json({
-           
-        })
+        return response.status(200).json(colaborador)
     }
 
     async update(request, response) {
