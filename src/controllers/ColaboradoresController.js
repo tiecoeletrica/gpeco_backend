@@ -44,7 +44,41 @@ class ColaboradoresController {
     }
 
     async update(request, response) {
+        const {nome, email, senha, senhaAntiga, status, cpf} = request.body
+        const {id} = request.params;
         
+        const [colaborador] = await knex("colaboradores").where({id})
+
+        if(!colaborador.length < 1){
+            throw new AppError("Usuário não encontrado")
+        }
+        
+        colaborador.nome = nome ?? colaborador.nome
+        colaborador.email = email ?? colaborador.email
+        colaborador.status = status ?? colaborador.status
+        colaborador.cpf = cpf ?? colaborador.cpf
+        
+        if(!senha || !senhaAntiga){
+            throw new AppError("Informe a senha antiga e a senha nova")
+        }
+
+        console.log(colaborador)
+        
+        const comparacaoSenha = await compare(senhaAntiga,colaborador.senha)
+        
+        if(!comparacaoSenha){
+            throw new AppError("A senha atual não confere com a atual")
+        }
+
+        const hashedSenha = await hash(senha, 8)
+
+        await knex("colaboradores").where({id}).update({
+            nome: colaborador.nome,
+            email: colaborador.email,
+            status: colaborador.status,
+            cpf: colaborador.cpf,
+            senha: hashedSenha
+        })
         
         response.status(200).json()
     }
