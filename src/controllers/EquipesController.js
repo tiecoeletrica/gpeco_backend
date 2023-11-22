@@ -68,10 +68,12 @@ class EquipesController {
     }
 
     async show(request, response) {
+        const { id } = request.params
+
+        const equipe = await knex("equipes").where({id})
         
-        return response.status(200).json({
-           
-        })
+        return response.status(200).json(equipe)
+    
     }
 
     async update(request, response) {
