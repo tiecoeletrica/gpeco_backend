@@ -58,6 +58,7 @@ class ColaboradoresController {
         colaborador.email = email ?? colaborador.email
         colaborador.status = status ?? colaborador.status
         colaborador.cpf = cpf ?? colaborador.cpf
+        colaborador.equipe_id = equipe_id ?? colaborador.equipe_id
         
         if(!senha || !senhaAntiga){
             throw new AppError("Informe a senha antiga e a senha nova")
@@ -77,6 +78,7 @@ class ColaboradoresController {
             email: colaborador.email,
             status: colaborador.status,
             cpf: colaborador.cpf,
+            equipe_id: colaborador.equipe_id,
             senha: hashedSenha
         })
         
