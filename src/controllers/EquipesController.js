@@ -77,9 +77,70 @@ class EquipesController {
     }
 
     async update(request, response) {
+        const {equipe, tipo,lider_id, supervisor_id, coordenador_id, contrato, status} = request.body        
+        const {id} = request.params
+
+        const [equipeTeste] = await knex("equipes").where({id})
+        console.log(equipeTeste)
+
+        if(!equipeTeste){
+            throw new AppError("Equipe não encontrado")
+        }
         
+        const [VerificarEquipe] = await knex("equipes").where({equipe}).whereNot({id})
         
-        response.status(200).json()
+        if(VerificarEquipe){
+            throw new AppError("Nome de equipe já utilizado")
+        }
+
+        if(lider_id){
+            const [testeColaboradores] = await knex("colaboradores").where({id:lider_id ?? ""})
+            
+            if(!testeColaboradores){
+                throw new AppError("Líder não cadastrado")     
+            }
+
+            const [testeLider] = await knex("equipes").where({lider_id}).whereNot({id})
+            if(testeLider){
+                throw new AppError("Esse colaborador já é líder de outra equipe")     
+            }
+        }
+        if(supervisor_id){
+            const [testeColaboradores] = await knex("colaboradores").where({id:supervisor_id ?? ""})
+            
+            if(!testeColaboradores){
+                throw new AppError("Supervisor não cadastrado")     
+            }
+        } 
+        
+        if(coordenador_id){
+            const [testeColaboradores] = await knex("colaboradores").where({id:coordenador_id ?? ""})
+            
+            if(!testeColaboradores){
+                throw new AppError("Coordenador não cadastrado")     
+            }
+        }
+
+        equipeTeste.equipe = equipe ?? equipeTeste.equipe 
+        equipeTeste.lider_id = lider_id ?? equipeTeste.lider_id 
+        equipeTeste.supervisor_id = supervisor_id ?? equipeTeste.supervisor_id 
+        equipeTeste.coordenador_id = coordenador_id ?? equipeTeste.coordenador_id 
+        equipeTeste.contrato = contrato ?? equipeTeste.contrato 
+        equipeTeste.status = status ?? equipeTeste.status 
+        equipeTeste.tipo = tipo ?? equipeTeste.tipo 
+
+        await knex("equipes").where({id}).update({
+            equipe: equipeTeste.equipe,
+            lider_id: equipeTeste.lider_id,
+            supervisor_id: equipeTeste.supervisor_id,
+            coordenador_id: equipeTeste.coordenador_id,
+            contrato: equipeTeste.contrato,
+            status: equipeTeste.status,
+            tipo: equipeTeste.tipo
+        })
+
+        
+        response.status(200).json("Usuário atualizado")
     }
 }
 
