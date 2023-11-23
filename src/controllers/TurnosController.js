@@ -39,9 +39,22 @@ class TurnosController {
   }
 
   async show(request, response) {
-    const teste = await knex("turnos").where("inicio_turno", ">", "07:10:00");
+    const {id} = request.params
 
-    return response.status(200).json(teste);
+    const [turno] = await knex("turnos").where({id})
+
+    const [colaboradores] = await knex("colaboradores_turnos")
+        .select("colaboradores.nome")
+        .innerJoin("colaboradores","colaboradores.id","colaboradores_turnos.colaborador_id")
+        .where("colaboradores_turnos.turno_id",id)
+        
+    const [obras_turnos] = await knex("obras_turnos")
+        .innerJoin("obras","obras.id","obras_turnos.obra_id")
+        .innerJoin("lancamentos","lancamentos.obras_turnos_id","obras_turnos.id")
+        .innerJoin("servicos","servicos.id","lancamentos.servico_id")
+        .where("obras_turnos.turno_id",id)
+
+    return response.status(200).json({turno,colaboradores,obras_turnos});
   }
 
   async delete(request, response) {
