@@ -26,7 +26,7 @@ class ColaboradoresController {
         })
         
 
-        response.status(201).json("Usuário Criado");
+        response.status(201).json("Usuário criado");
     }
 
     async index(request, response) {
