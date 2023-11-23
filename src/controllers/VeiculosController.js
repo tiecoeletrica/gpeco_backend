@@ -1,93 +1,85 @@
-const knex = require("../database/knex")
-const AppError = require("../utils/AppError") //importa biblioteca de erros
-
-
+const knex = require("../database/knex");
+const AppError = require("../utils/AppError"); //importa biblioteca de erros
 
 class VeiculosController {
-    async create(request, response) {
-        const {placa, tipo, equipe_id} = request.body
+  async create(request, response) {
+    const { placa, tipo, equipe_id } = request.body;
 
-        const [testePlaca] = await knex("veiculos").where({placa})
+    const [testePlaca] = await knex("veiculos").where({ placa });
 
-
-        if(testePlaca){
-            throw new AppError("Já existe um veículo cadastrado com essa placa")     
-        }
-
-        const [testeEquipe] = await knex("equipes").where({id:equipe_id})
-
-
-        if(!testeEquipe){
-            throw new AppError("Não existe uma equipe com esse id")     
-        }
-
-
-        await knex("veiculos").insert({
-            placa, tipo, equipe_id
-        })
-        
-
-        response.status(201).json("Veículo cadastrado");
-
+    if (testePlaca) {
+      throw new AppError("Já existe um veículo cadastrado com essa placa");
     }
 
-    async show(request, response) {
-        const {id} = request.params
+    const [testeEquipe] = await knex("equipes").where({ id: equipe_id });
 
-        const veiculo = await knex("veiculos").where({id})
-        
-        return response.status(200).json(veiculo)
+    if (!testeEquipe) {
+      throw new AppError("Não existe uma equipe com esse id");
     }
 
-    async update(request, response) {
-        const {placa, tipo, equipe_id} = request.body
-        const {id} = request.params
+    await knex("veiculos").insert({
+      placa,
+      tipo,
+      equipe_id,
+    });
 
-        const [testePlaca] = await knex("veiculos").where({placa}).whereNot({id})
-        
-        
-        if(testePlaca){
-            throw new AppError("Já existe um veículo cadastrado com essa placa")     
-        }
+    response.status(201).json("Veículo cadastrado");
+  }
 
-        const [testeEquipe] = await knex("equipes").where({id:equipe_id})
-        
+  async show(request, response) {
+    const { id } = request.params;
 
-        if(!testeEquipe){
-            throw new AppError("Não existe uma equipe com esse id")     
-        }
+    const veiculo = await knex("veiculos").where({ id });
 
-        const [veiculo] = await knex("veiculos").where({id})
-        
-        veiculo.placa = placa ?? veiculo.placa
-        veiculo.tipo = tipo ?? veiculo.tipo
-        veiculo.equipe_id = equipe_id ?? veiculo.equipe_id
+    return response.status(200).json(veiculo);
+  }
 
-        await knex("veiculos").where({id}).update({
-            placa: veiculo.placa, 
-            tipo: veiculo.tipo, 
-            equipe_id:veiculo.equipe_id
-        })
+  async update(request, response) {
+    const { placa, tipo, equipe_id } = request.body;
+    const { id } = request.params;
 
-       
-        return response.status(201).json()
+    const [testePlaca] = await knex("veiculos")
+      .where({ placa })
+      .whereNot({ id });
+
+    if (testePlaca) {
+      throw new AppError("Já existe um veículo cadastrado com essa placa");
     }
 
-    async index(request, response) {
-        const {tipo} = request.query
+    const [testeEquipe] = await knex("equipes").where({ id: equipe_id });
 
-        let filter = {};
-
-        if (tipo) filter.tipo = tipo;
-
-        const equipes = await knex("veiculos")
-            .select(["id","placa","tipo","equipe_id"])
-            .where(filter)
-
-        response.status(200).json(equipes);
+    if (!testeEquipe) {
+      throw new AppError("Não existe uma equipe com esse id");
     }
 
+    const [veiculo] = await knex("veiculos").where({ id });
+
+    veiculo.placa = placa ?? veiculo.placa;
+    veiculo.tipo = tipo ?? veiculo.tipo;
+    veiculo.equipe_id = equipe_id ?? veiculo.equipe_id;
+
+    await knex("veiculos").where({ id }).update({
+      placa: veiculo.placa,
+      tipo: veiculo.tipo,
+      equipe_id: veiculo.equipe_id,
+    });
+
+    return response.status(201).json();
+  }
+
+  async index(request, response) {
+    const { tipo } = request.query;
+
+    let filter = {};
+
+    if (tipo) filter.tipo = tipo;
+
+    const equipes = await knex("veiculos")
+      .select(["id", "placa", "tipo", "equipe_id"])
+      .where(filter);
+
+    response.status(200).json(equipes);
+  }
 }
 
-
-module.exports = VeiculosController
+module.exports = VeiculosController;

@@ -6,7 +6,7 @@ const turnosController = new TurnosController()
 
 const turnosRoutes = Router()
 
-turnosRoutes.post("/:user_id", turnosController.create)
+turnosRoutes.post("/", turnosController.create)
 turnosRoutes.get("/:id", turnosController.show)
 turnosRoutes.delete("/:id", turnosController.delete)
 turnosRoutes.put("/:id", turnosController.update)
