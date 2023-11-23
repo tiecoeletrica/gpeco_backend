@@ -37,9 +37,17 @@ class VeiculosController {
     }
 
     async index(request, response) {
-        
-        
-        response.status(200).json()
+        const {tipo} = request.query
+
+        let filter = {};
+
+        if (tipo) filter.tipo = tipo;
+
+        const equipes = await knex("veiculos")
+            .select(["id","placa","tipo","equipe_id"])
+            .where(filter)
+
+        response.status(200).json(equipes);
     }
 
 }
