@@ -58,7 +58,11 @@ class TurnosController {
   }
 
   async delete(request, response) {
-    return response.status(201).json("Nota deletada");
+    const {id} = request.params
+
+    await knex("turnos").where({id}).delete()
+
+    return response.status(201).json("Turno deletado");
   }
 
   async index(request, response) {
