@@ -14,14 +14,20 @@ class ServicosController {
     await knex("servicos").insert({
       codigo,
       descricao,
-      unidade
+      unidade,
     });
 
     response.status(201).json();
   }
 
   async show(request, response) {
-    return response.status(200).json({});
+    const {id} = request.params
+
+    const [servicos] = await knex("servicos").where({id});
+
+    if(!servicos) throw new AppError("Serviço não cadastrado")
+
+    return response.status(200).json(servicos);
   }
 
   async update(request, response) {
@@ -29,8 +35,7 @@ class ServicosController {
   }
 
   async index(request, response) {
-
-    const servicos = await knex("servicos")
+    const servicos = await knex("servicos");
 
     response.status(200).json(servicos);
   }
