@@ -29,7 +29,10 @@ class ServicosController {
   }
 
   async index(request, response) {
-    response.status(200).json();
+
+    const servicos = await knex("servicos")
+
+    response.status(200).json(servicos);
   }
 }
 
