@@ -45,7 +45,13 @@ class ObrasController {
   }
 
   async show(request, response) {
-    return response.status(200).json({});
+    const {id} = request.params
+
+    const [obra] = await knex("obras").where({id})
+
+    if(!obra) throw new AppError("Obra não encontrada")
+
+    return response.status(200).json(obra);
   }
 
   async update(request, response) {
