@@ -34,14 +34,14 @@ class ProgramacoesController {
 
     const resolvedProgramacao = await Promise.all(programacao);
 
-    await knex("programacoes").delete()
+    await knex("programacoes").delete();
     resolvedProgramacao.map(async (prog) => {
       const { obra_id, equipe_id, data } = prog;
 
       await knex("programacoes").insert({
         obra_id,
         equipe_id,
-        data
+        data,
       });
     });
 
@@ -57,7 +57,18 @@ class ProgramacoesController {
   }
 
   async index(request, response) {
-    response.status(200).json();
+    const { equipe_id,obra_id, data } = request.query;
+
+    let filter = {};
+
+    if (equipe_id) filter.equipe_id =equipe_id
+    if (obra_id) filter.obra_id =obra_id
+    if (data) filter.data = data;
+
+    const programacoes = await knex("programacoes")
+      .where(filter)
+
+    response.status(200).json(programacoes);
   }
 
   async update(request, response) {
