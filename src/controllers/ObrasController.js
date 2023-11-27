@@ -55,7 +55,42 @@ class ObrasController {
   }
 
   async update(request, response) {
-    return response.status(201).json();
+    const { projeto, descricao, status, carteira, cidade, utd } = request.body
+    const {id} = request.params
+    
+    const [obra] = await knex("obras").where({id})
+    
+    const [testeObra] = await knex("obras")
+    .where({projeto: projeto ?? obra.projeto,carteira: carteira ?? obra.carteira})
+    .whereNot({id})
+    
+    if(testeObra) throw new AppError("Essa obra já se encontra nessa carteira")
+
+    const [testeId] = await knex("obras")
+    .where({id})
+    
+    if(!testeId) throw new AppError("Obra não encontrado")
+    
+    obra.projeto = projeto ?? obra.projeto
+    obra.descricao = descricao ?? obra.descricao
+    obra.status = status ?? obra.status
+    obra.carteira = carteira ?? obra.carteira
+    obra.cidade = cidade ?? obra.cidade
+    obra.utd = utd ?? obra.utd
+
+    await knex("obras")
+        .where({id})
+        .update({
+            projeto :  obra.projeto,
+            descricao :  obra.descricao,
+            status :  obra.status,
+            carteira :  obra.carteira,
+            cidade :  obra.cidade,
+            utd :  obra.utd
+        })
+
+
+    return response.status(200).json("Obra atualizada");
   }
 
   async index(request, response) {

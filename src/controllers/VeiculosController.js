@@ -37,9 +37,11 @@ class VeiculosController {
   async update(request, response) {
     const { placa, tipo, equipe_id } = request.body;
     const { id } = request.params;
+    
+    const [veiculo] = await knex("veiculos").where({ id });
 
     const [testePlaca] = await knex("veiculos")
-      .where({ placa })
+      .where({ placa: placa ?? veiculo.placa })
       .whereNot({ id });
 
     if (testePlaca) {
@@ -51,8 +53,6 @@ class VeiculosController {
     if (!testeEquipe) {
       throw new AppError("Não existe uma equipe com esse id");
     }
-
-    const [veiculo] = await knex("veiculos").where({ id });
 
     veiculo.placa = placa ?? veiculo.placa;
     veiculo.tipo = tipo ?? veiculo.tipo;

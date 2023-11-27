@@ -33,9 +33,11 @@ class ServicosController {
   async update(request, response) {
     const { codigo, descricao, unidade } = request.body;
     const {id} = request.params
+    
+    const [servico] = await knex("servicos").where({id})
 
     const [testeCodigo] = await knex("servicos")
-        .where({codigo})
+        .where({codigo: codigo ?? servico.codigo})
         .whereNot({id})
 
     if(testeCodigo) throw new AppError("Já existe um serviço com esse código")
@@ -44,8 +46,6 @@ class ServicosController {
         .where({id})
 
     if(!testeId) throw new AppError("Serviço não encontrado")
-
-    const [servico] = await knex("servicos").where({id})
 
     servico.codigo = codigo ?? servico.codigo
     servico.unidade = unidade ?? servico.unidade

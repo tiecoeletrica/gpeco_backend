@@ -81,13 +81,12 @@ class EquipesController {
         const {id} = request.params
 
         const [equipeTeste] = await knex("equipes").where({id})
-        console.log(equipeTeste)
 
         if(!equipeTeste){
             throw new AppError("Equipe não encontrado")
         }
         
-        const [VerificarEquipe] = await knex("equipes").where({equipe}).whereNot({id})
+        const [VerificarEquipe] = await knex("equipes").where({equipe: equipe ?? equipeTeste.equipe}).whereNot({id})
         
         if(VerificarEquipe){
             throw new AppError("Nome de equipe já utilizado")

@@ -44,11 +44,10 @@ class ColaboradoresController {
     }
 
     async update(request, response) {
-        const {nome, email, senha, senhaAntiga, status, cpf} = request.body
+        const {nome, email, senha, senhaAntiga, status, cpf, equipe_id} = request.body
         const {id} = request.params;
         
         const [colaborador] = await knex("colaboradores").where({id})
-        console.log(colaborador)
 
         if(!colaborador){
             throw new AppError("Usuário não encontrado")

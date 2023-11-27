@@ -130,9 +130,11 @@ class TurnosController {
     } = request.body;
 
     const { id } = request.params;
+    
+    const [turno] = await knex("turnos").where({ id });
 
     const [testeTurnoData] = await knex("turnos")
-      .where({ equipe_id, data })
+      .where({ equipe_id: equipe_id ?? turno.equipe_id, data: data ?? turno.data })
       .whereNot({ id });
 
     if (testeTurnoData) {
@@ -141,19 +143,17 @@ class TurnosController {
       );
     }
 
-    const [testeEquipe] = await knex("equipes").where({ id: equipe_id });
+    const [testeEquipe] = await knex("equipes").where({ id: equipe_id ?? turno.equipe_id});
 
     if (!testeEquipe) {
       throw new AppError("Essa equipe não está cadastrada");
     }
 
-    const [testeVeiculo] = await knex("veiculos").where({ id: veiculo_id });
+    const [testeVeiculo] = await knex("veiculos").where({ id: veiculo_id ?? turno.veiculo_id});
 
     if (!testeVeiculo) {
       throw new AppError("Esse veículo não está cadastrado");
     }
-
-    const [turno] = await knex("turnos").where({ id });
 
     turno.equipe_id = equipe_id ?? turno.equipe_id;
     turno.data = data ?? turno.data;
