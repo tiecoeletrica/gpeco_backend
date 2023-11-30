@@ -49,16 +49,19 @@ class ProgramacoesController {
   }
 
   async index(request, response) {
-    const { equipe_id,obra_id, data } = request.query;
+    const { equipe_id,obra_id, data_inicial, data_final } = request.query;
 
     let filter = {};
 
     if (equipe_id) filter.equipe_id =equipe_id
     if (obra_id) filter.obra_id =obra_id
-    if (data) filter.data = data;
 
     const programacoes = await knex("programacoes")
-      .where(filter)
+    .whereBetween("data", [
+      data_inicial ?? "1900-01-01",
+      data_final ?? "2050-01-01",
+    ])
+    .where(filter)
 
     response.status(200).json(programacoes);
   }
