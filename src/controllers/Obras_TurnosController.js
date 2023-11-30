@@ -37,7 +37,16 @@ class Obras_TurnosController {
   }
 
   async index(request, response) {
-    response.status(200).json();
+    const {turno_id} = request.query
+
+    let filter = {};
+
+    if (turno_id) filter.turno_id = turno_id;
+
+    const equipes = await knex("obras_turnos")
+        .where(filter)
+
+    response.status(200).json(equipes);
   }
 
   async update(request, response) {
