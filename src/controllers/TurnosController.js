@@ -23,13 +23,13 @@ class TurnosController {
       );
     }
 
-    const testeEquipe = await knex("equipes").where({ id: equipe_id });
+    const [testeEquipe] = await knex("equipes").where({ id: equipe_id });
 
     if (!testeEquipe) {
       throw new AppError("Essa equipe não está cadastrada");
     }
 
-    const testeVeiculo = await knex("veiculos").where({ id: veiculo_id });
+    const [testeVeiculo] = await knex("veiculos").where({ id: veiculo_id });
 
     if (!testeVeiculo) {
       throw new AppError("Esse veículo não está cadastrado");
