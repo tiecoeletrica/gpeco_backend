@@ -48,14 +48,6 @@ class ProgramacoesController {
     response.status(201).json("Programação inserida com sucesso");
   }
 
-  async show(request, response) {
-    return response.status(200).json({});
-  }
-
-  async delete(request, response) {
-    return response.status(201).json("Nota deletada");
-  }
-
   async index(request, response) {
     const { equipe_id,obra_id, data } = request.query;
 
@@ -71,11 +63,7 @@ class ProgramacoesController {
     response.status(200).json(programacoes);
   }
 
-  async update(request, response) {
 
-    
-    response.status(200).json();
-  }
 }
 
 module.exports = ProgramacoesController;
