@@ -11,6 +11,7 @@ const  programacoesRouter = require("./programacoes.routes")
 const  servicosRouter = require("./servicos.routes")
 const  turnosRouter = require("./turnos.routes")
 const  veiculosRouter = require("./veiculos.routes")
+const perguntasRoutes = require("./perguntas.routes")
 
 //insere a constante em um "app", nesse caso routes
 const routes = Router();
@@ -25,6 +26,7 @@ routes.use("/programacoes", programacoesRouter);
 routes.use("/servicos", servicosRouter);
 routes.use("/turnos", turnosRouter);
 routes.use("/veiculos", veiculosRouter);
+routes.use("/perguntas", perguntasRoutes);
 
 // exporta as rotas
 module.exports = routes;
