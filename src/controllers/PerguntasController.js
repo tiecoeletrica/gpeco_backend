@@ -1,18 +1,10 @@
 const knex = require("../database/knex")
 const AppError = require("../utils/AppError") //importa biblioteca de erros
-const { hash, compare } = require("bcryptjs")
-
 
 
 class PerguntasController {
     async create(request, response) {
         const { pergunta_resposta, tipo, categoria } = request.body;
-
-        const [pergunta] = await knex("perguntas").where({ pergunta_resposta });
-
-        if (pergunta) {
-            throw new AppError("Essa pergunta ou resposta já está cadastrada");
-        }
 
         await knex("perguntas").insert({
             pergunta_resposta,
@@ -23,22 +15,32 @@ class PerguntasController {
     }
 
     async index(request, response) {
-        const {tipo, categoria} = request.query
-        
+        const { tipo, categoria } = request.query
+
         let filter = {};
 
-        if (tipo) filter.tipo =tipo
-        if (categoria) filter.categoria =categoria
-    
+        if (tipo) filter.tipo = tipo
+        if (categoria) filter.categoria = categoria
+
         const perguntas = await knex("perguntas")
-        .where(filter)
-        
+            .where(filter)
+
         response.status(200).json(perguntas);
     }
 
     async update(request, response) {
+        const { id } = request.params
 
-        response.status(200).json()
+        const [pergunta] = await knex("perguntas")
+            .where({ id: id, data_final: null })
+
+        if (!pergunta) throw new AppError("A pergunta não foi encontrada ou já foi encerrada")
+
+        await knex("perguntas")
+            .update({ data_final: knex.fn.now() })
+            .where({ id })
+
+        response.status(200).json(`A pergunta "${pergunta.pergunta_resposta}" foi encerrada`)
     }
 }
 

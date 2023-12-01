@@ -14,8 +14,7 @@ class TurnosController {
       hodometro_final,
       veiculo_id,
       colaboradores_id,
-      checklist_veicular,
-      checklist_epi,
+      checklist,
       fotos_turno
     } = request.body;
 
@@ -58,7 +57,7 @@ class TurnosController {
       });
     });
 
-    
+
 
     response.status(201).json(idTurno);
   }
