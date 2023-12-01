@@ -23,8 +23,17 @@ class PerguntasController {
     }
 
     async index(request, response) {
+        const {tipo, categoria} = request.query
+        
+        let filter = {};
 
-        response.status(200).json(usuarios);
+        if (tipo) filter.tipo =tipo
+        if (categoria) filter.categoria =categoria
+    
+        const perguntas = await knex("perguntas")
+        .where(filter)
+        
+        response.status(200).json(perguntas);
     }
 
     async update(request, response) {
