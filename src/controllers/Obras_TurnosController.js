@@ -1,3 +1,4 @@
+const { application } = require("express");
 const knex = require("../database/knex");
 const AppError = require("../utils/AppError"); //importa biblioteca de erros
 
@@ -37,32 +38,16 @@ class Obras_TurnosController {
     response.status(201).json("Serviço de obra lançado com sucesso");
   }
 
-  async show(request, response) {
-    const { id } = request.params
-
-    const [obra] = await knex("obras").where({ id })
-
-    if (!obra) throw new AppError("Obra não encontrada")
-
-    return response.status(200).json(obra);
-
-  }
-
   async delete(request, response) {
-    return response.status(201).json("Nota deletada");
-  }
+    const {id} = request.params
 
-  async index(request, response) {
-    const { turno_id } = request.query
+    const [verificarID] = await knex("obras_turnos").where({id})
 
-    let filter = {};
+    if(!verificarID) throw new AppError("ID de obras_turnos não encontrado")
 
-    if (turno_id) filter.turno_id = turno_id;
-
-    const equipes = await knex("obras_turnos")
-      .where(filter)
-
-    response.status(200).json(equipes);
+    await knex("obras_turnos").where({id}).delete()
+    
+    return response.status(201).json("Registro de obra deletado");
   }
 
   async update(request, response) {
