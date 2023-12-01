@@ -13,6 +13,10 @@ class TurnosController {
       hodometro_inicial,
       hodometro_final,
       veiculo_id,
+      colaboradores_id,
+      checklist_veicular,
+      checklist_epi,
+      fotos_turno
     } = request.body;
 
     const [testeTurno] = await knex("turnos").where({ equipe_id, data });
@@ -35,7 +39,7 @@ class TurnosController {
       throw new AppError("Esse veículo não está cadastrado");
     }
 
-    await knex("turnos").insert({
+    const [idTurno] = await knex("turnos").insert({
       equipe_id,
       data,
       inicio_turno,
@@ -47,7 +51,14 @@ class TurnosController {
       veiculo_id,
     });
 
-    response.status(201).json("Turno inserido no banco de dados com sucesso");
+    colaboradores_id.map(async (colaID) => {
+      await knex("colaboradores_turnos").insert({
+        colaborador_id: colaID,
+        turno_id: idTurno,
+      });
+    });
+
+    response.status(201).json(idTurno);
   }
 
   async show(request, response) {
@@ -55,24 +66,41 @@ class TurnosController {
 
     const turno = await knex("turnos").where({ id });
 
-    const colaboradores = await knex("colaboradores_turnos")
+    const colaboradoresOb = await knex("colaboradores_turnos")
       .select("colaboradores.nome")
-      .innerJoin(
+      .fullOuterJoin(
         "colaboradores",
         "colaboradores.id",
         "colaboradores_turnos.colaborador_id"
       )
       .where("colaboradores_turnos.turno_id", id);
 
-    const obras_turnos = await knex("obras_turnos")
-      .innerJoin("obras", "obras.id", "obras_turnos.obra_id")
-      .innerJoin(
-        "lancamentos",
-        "lancamentos.obras_turnos_id",
-        "obras_turnos.id"
-      )
-      .innerJoin("servicos", "servicos.id", "lancamentos.servico_id")
-      .where("obras_turnos.turno_id", id);
+    const colaboradores = []
+    colaboradoresOb.map(cola => colaboradores.push(cola.nome))
+
+    // const obras_turnos = await knex("obras_turnos")
+    //   .fullOuterJoin("obras", "obras.id", "obras_turnos.obra_id")
+    //   .fullOuterJoin(
+    //     "lancamentos",
+    //     "lancamentos.obras_turnos_id",
+    //     "obras_turnos.id"
+    //   )
+    //   .fullOuterJoin("servicos", "servicos.id", "lancamentos.servico_id")
+    //   .where("obras_turnos.turno_id", id);
+
+    var obras_turnos = await knex("obras_turnos")
+      .where({ turno_id: id });
+
+    obras_turnos = obras_turnos.map(async (o_t) => {
+      [o_t.obra] = await knex("obras").where({ id: o_t.obra_id })
+      o_t.lancamentos = await knex("lancamentos")
+        .where("obras_turnos_id", o_t.id)
+        .leftJoin("servicos", "servicos.id", "lancamentos.servico_id")
+        .select(["lancamentos.id", "codigo", "descricao", "unidade", "quantidade"])
+      return o_t
+    })
+
+    obras_turnos = await Promise.all(obras_turnos)
 
     return response.status(200).json({ turno, colaboradores, obras_turnos });
   }
@@ -130,11 +158,14 @@ class TurnosController {
     } = request.body;
 
     const { id } = request.params;
-    
+
     const [turno] = await knex("turnos").where({ id });
 
     const [testeTurnoData] = await knex("turnos")
-      .where({ equipe_id: equipe_id ?? turno.equipe_id, data: data ?? turno.data })
+      .where({
+        equipe_id: equipe_id ?? turno.equipe_id,
+        data: data ?? turno.data,
+      })
       .whereNot({ id });
 
     if (testeTurnoData) {
@@ -143,13 +174,17 @@ class TurnosController {
       );
     }
 
-    const [testeEquipe] = await knex("equipes").where({ id: equipe_id ?? turno.equipe_id});
+    const [testeEquipe] = await knex("equipes").where({
+      id: equipe_id ?? turno.equipe_id,
+    });
 
     if (!testeEquipe) {
       throw new AppError("Essa equipe não está cadastrada");
     }
 
-    const [testeVeiculo] = await knex("veiculos").where({ id: veiculo_id ?? turno.veiculo_id});
+    const [testeVeiculo] = await knex("veiculos").where({
+      id: veiculo_id ?? turno.veiculo_id,
+    });
 
     if (!testeVeiculo) {
       throw new AppError("Esse veículo não está cadastrado");
@@ -159,7 +194,8 @@ class TurnosController {
     turno.data = data ?? turno.data;
     turno.inicio_turno = inicio_turno ?? turno.inicio_turno;
     turno.fim_turno = fim_turno ?? turno.fim_turno;
-    turno.inicio_deslocamento = inicio_deslocamento ?? turno.inicio_deslocamento;
+    turno.inicio_deslocamento =
+      inicio_deslocamento ?? turno.inicio_deslocamento;
     turno.fim_deslocamento = fim_deslocamento ?? turno.fim_deslocamento;
     turno.hodometro_inicial = hodometro_inicial ?? turno.hodometro_inicial;
     turno.hodometro_final = hodometro_final ?? turno.hodometro_final;
