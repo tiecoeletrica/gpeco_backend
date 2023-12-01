@@ -57,6 +57,25 @@ class TurnosController {
       });
     });
 
+    checklist.map(async cl => {
+      const [tipo] = await knex("perguntas")
+        .select("tipo")
+        .where({ id: cl })
+
+      await knex("checklists").insert({
+        tipo_checklist: tipo,
+        pergunta_id: cl,
+        turno_id: idTurno
+      })
+    })
+
+    fotos_turno.map(async foto => {
+      await knex("fotos").insert({
+        tipo: foto.tipo,
+        link_drive: foto.link_drive,
+        turno_id: idTurno
+      })
+    })
 
 
     response.status(201).json(idTurno);
