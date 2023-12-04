@@ -8,27 +8,34 @@ const {sign} = require("jsonwebtoken")
 
 class SolicitacoesController {
     async create(request, response) {
-        const {email,senha} = request.body
+        const {nome, cpf, senha, email} = request.body
 
-        
-        const [colaborador] = await knex("colaboradores").where({ email })
+        const testeEmail = await knex("colaboradores").where({email})
+        const regexEcoeletrica = /\@ecoeletrica\.com\.br/
 
-        if (!colaborador) {
-            throw new AppError("Email e/ou senha incorreta", 401)
+        if(!regexEcoeletrica.test(email)){
+            throw new AppError("e-mail não pertence a Ecoelétrica")     
         }
 
-        const passwordMatched = await compare(senha, colaborador.senha)
+        if(testeEmail.length  > 0){
+            throw new AppError("e-mail já cadastrado")     
+        }
 
-        if(!passwordMatched) throw new AppError("Email e/ou senha incorreta", 401)
+        const hashedSenha = await hash(senha, 8)
 
-        const {secret,expiresIn} = authConfig.jwt
-        const token = sign({},secret, {
-            subject: String(colaborador.id),
-            expiresIn
+        await knex("solicitacoes").insert({
+            nome, cpf, senha:hashedSenha, email
         })
-        
-        return response.json({colaborador,token});
+        return response.status(201).json(`Solicitação de criação do colaborador ${nome}`);
     }
+
+    async delete(request, response) {
+        const { id } = request.params;
+    
+        await knex("solicitacoes").where({ id }).delete();
+    
+        return response.status(200).json("Solicitação de cadastro deletada");
+      }
 
     
 }

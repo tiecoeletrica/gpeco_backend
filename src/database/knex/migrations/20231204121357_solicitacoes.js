@@ -3,8 +3,8 @@ exports.up = (knex) =>
     table.bigIncrements("id");
     table.string("nome").notNullable();
     table.bigInteger("cpf").notNullable();
-    table.bigInteger("email").notNullable();
-    table.bigInteger("senha").notNullable();
+    table.string("email").notNullable();
+    table.string("senha").notNullable();
   });
 
 exports.down = (knex) => knex.schema.dropTable("solicitacoes");
