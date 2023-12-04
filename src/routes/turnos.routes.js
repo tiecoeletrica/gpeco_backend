@@ -1,5 +1,4 @@
 const { Router } = require("express")
-const ensureAuthenticated = require("../middleware/ensureAuthenticated")
 
 const TurnosController = require("../controllers/TurnosController")
 
