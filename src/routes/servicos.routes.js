@@ -6,6 +6,9 @@ const servicosController = new ServicosController()
 
 const servicosRoutes = Router()
 
+const ensureAuthenticated = require("../middleware/ensureAuthenticated")
+servicosRoutes.use(ensureAuthenticated)
+
 servicosRoutes.post("/", servicosController.create)
 servicosRoutes.get("/:id", servicosController.show)
 servicosRoutes.put("/:id", servicosController.update)

@@ -7,6 +7,9 @@ const turnosController = new TurnosController()
 
 const turnosRoutes = Router()
 
+const ensureAuthenticated = require("../middleware/ensureAuthenticated")
+turnosRoutes.use(ensureAuthenticated)
+
 turnosRoutes.post("/", turnosController.create)
 turnosRoutes.get("/:id", turnosController.show)
 turnosRoutes.delete("/:id", turnosController.delete)
