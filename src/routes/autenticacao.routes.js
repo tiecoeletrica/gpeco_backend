@@ -1,12 +1,12 @@
 const { Router } = require("express")
 
-const AtutenticacaoController = require("../controllers/AutenticacaoController")
+const AutenticacaoController = require("../controllers/AutenticacaoController")
 
-const atutenticacaoController = new AtutenticacaoController()
+const autenticacaoController = new AutenticacaoController()
 
-const atutenticacaoRoutes = Router()
+const autenticacaoRoutes = Router()
 
-atutenticacaoRoutes.post("/", atutenticacaoController.create)
+autenticacaoRoutes.post("/", autenticacaoController.create)
 
 
-module.exports = atutenticacaoRoutes;
+module.exports = autenticacaoRoutes;

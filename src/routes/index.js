@@ -2,7 +2,7 @@
 const { Router } = require("express");
 
 //rota para a rota do usuário
-const  atutenticacaoRoutes  = require("./autenticacao.routes");
+const  autenticacaoRoutes  = require("./autenticacao.routes");
 const  colaboradoresRouter  = require("./colaboradores.routes");
 const  equipesRouter = require("./equipes.routes")
 const  obrasRouter = require("./obras.routes")
@@ -12,12 +12,14 @@ const  servicosRouter = require("./servicos.routes")
 const  turnosRouter = require("./turnos.routes")
 const  veiculosRouter = require("./veiculos.routes")
 const perguntasRoutes = require("./perguntas.routes")
+const solicitacoesRoutes = require("./solicitacoes.routes")
+
 
 //insere a constante em um "app", nesse caso routes
 const routes = Router();
 
 //fala pra o aplicativo usar o arquivo users.routes.js pra acessar os métodos
-routes.use("/autenticacao", atutenticacaoRoutes);
+routes.use("/autenticacao", autenticacaoRoutes);
 routes.use("/colaboradores", colaboradoresRouter);
 routes.use("/equipes", equipesRouter);
 routes.use("/obras", obrasRouter);
@@ -27,6 +29,7 @@ routes.use("/servicos", servicosRouter);
 routes.use("/turnos", turnosRouter);
 routes.use("/veiculos", veiculosRouter);
 routes.use("/perguntas", perguntasRoutes);
+routes.use("/solicitacoes", solicitacoesRoutes);
 
 // exporta as rotas
 module.exports = routes;
