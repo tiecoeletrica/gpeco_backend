@@ -8,8 +8,8 @@ const solicitacoesController = new SolicitacoesController()
 const solicitacoesRoutes = Router()
 
 solicitacoesRoutes.post("/", solicitacoesController.create)
-solicitacoesRoutes.get("/", solicitacoesController.index)
-solicitacoesRoutes.delete("/:id",ensureAuthenticated, solicitacoesController.delete)
+solicitacoesRoutes.get("/", ensureAuthenticated, solicitacoesController.index)
+solicitacoesRoutes.delete("/:id", ensureAuthenticated, solicitacoesController.delete)
 
 
 module.exports = solicitacoesRoutes;

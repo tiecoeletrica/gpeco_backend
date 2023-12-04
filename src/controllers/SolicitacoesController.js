@@ -20,6 +20,9 @@ class SolicitacoesController {
         if (testeEmail.length > 0) {
             throw new AppError("e-mail já cadastrado")
         }
+        const [testeEmailSolicitacoes] = await knex("solicitacoes").where({ email })
+
+        if (testeEmailSolicitacoes) throw new AppError("Solicitação já criada para esse email")
 
         const hashedSenha = await hash(senha, 8)
 
@@ -31,6 +34,10 @@ class SolicitacoesController {
 
     async delete(request, response) {
         const { id } = request.params;
+
+        const [testeID] = await knex("solicitacoes").where({ id })
+        console.log(testeID)
+        if (!testeID) throw new AppError("Esse ID de solicitação não existe")
 
         await knex("solicitacoes").where({ id }).delete();
 
