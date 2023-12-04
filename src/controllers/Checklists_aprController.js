@@ -50,15 +50,51 @@ class Checklists_aprController {
     }
 
     async index(request, response) {
+        const { turno_id, obras_turnos_id } = request.query
+
+        if (turno_id && obras_turnos_id) throw new AppError("Enviei somente o id do turno ou da obra_turno, não os dois")
+        if (!turno_id && !obras_turnos_id) throw new AppError("Enviei como parametro de query obras_turnos_id ou turnos_id")
+
+        if (!turno_id) {
+            var pergunta_apr = await knex("aprs").where({ obras_turnos_id })
+        } else if (!obras_turnos_id) pergunta_apr = await knex("checklists").where({ turno_id })
 
 
-        response.status(200).json(perguntas);
+        response.status(200).json(pergunta_apr);
     }
 
     async show(request, response) {
+        const { id, tipo } = request.params
 
+        switch (tipo) {
+            case 'apr':
+                const [apr] = await knex("aprs").where({ id })
+                if (!apr) throw new AppError("Id de APR não encontrado")
 
-        response.status(200).json(`A pergunta "${pergunta.pergunta_resposta}" foi encerrada`)
+                const [{ data }] = await knex("aprs")
+                    .leftJoin("obras_turnos", "obras_turnos.id", "aprs.obras_turnos_id")
+                    .leftJoin("turnos", "turnos.id", "obras_turnos.turno_id")
+                    .select(["turnos.data"])
+                    .where("aprs.id", id)
+
+                    console.log(data)
+                var perguntas = await knex("perguntas")
+                    .where({ tipo: "apr" })
+                    .andWhere("data_inicial", "<=", data+" 00:00:00")
+                    // .andWhere("data_final", ">=", data)
+                    // .orWhere("data_final", null)
+
+                break;
+            case 'smc':
+            case 'veicular':
+            case 'epi':
+
+                break;
+            default:
+                throw new AppError("Tipo de relatório não cadastrado")
+        }
+
+        response.status(200).json(perguntas)
     }
 }
 
