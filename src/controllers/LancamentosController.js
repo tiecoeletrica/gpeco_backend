@@ -21,7 +21,7 @@ class LancamentosController {
 
     const testeLancamentos = await knex("lancamentos").where({obras_turnos_id,servico_id})
 
-    if(testeLancamentos) throw new AppError("Serviço já lançado para essa obra, insira outro ou modifique o que já existe")
+    if(testeLancamentos) throw new AppError("Serviço já lançado para essa obra, insira outro lançaamento ou modifique o que já existe")
 
     await knex("lancamentos").insert({
       obras_turnos_id,
@@ -36,16 +36,25 @@ class LancamentosController {
   async delete(request, response) {
     const {id} = request.params
 
-    const [verificarID] = await knex("obras_turnos").where({id})
+    const [verificarID] = await knex("lancamentos").where({id})
 
-    if(!verificarID) throw new AppError("ID de obras_turnos não encontrado")
+    if(!verificarID) throw new AppError("ID lançamento não encontrado")
 
-    await knex("obras_turnos").where({id}).delete()
+    await knex("lancamentos").where({id}).delete()
     
-    return response.status(201).json("Registro de obra deletado");
+    return response.status(200).json("Lançamento deletado");
   }
 
   async update(request, response) {
+    const {quantidade} = request.body
+    const {id} = request.params
+
+    if(!quantidade) throw new AppError("Campo de 'quantidade' vazio")
+    
+    await knex("lancamentos").where({id}).update({
+      quantidade
+    })
+
     response.status(200).json();
   }
 }
