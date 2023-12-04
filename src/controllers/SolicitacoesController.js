@@ -14,7 +14,7 @@ class SolicitacoesController {
         const regexEcoeletrica = /\@ecoeletrica\.com\.br/
 
         if (!regexEcoeletrica.test(email)) {
-            throw new AppError("e-mail não pertence a Ecoelétrica")
+            throw new AppError("e-mail não pertence a Ecoelétrica",401)
         }
 
         if (testeEmail.length > 0) {

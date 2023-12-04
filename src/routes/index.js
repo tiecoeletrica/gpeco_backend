@@ -13,6 +13,7 @@ const  turnosRouter = require("./turnos.routes")
 const  veiculosRouter = require("./veiculos.routes")
 const perguntasRoutes = require("./perguntas.routes")
 const solicitacoesRoutes = require("./solicitacoes.routes")
+const lancamentosRoutes = require("./lancamentos.routes")
 
 
 //insere a constante em um "app", nesse caso routes
@@ -30,6 +31,7 @@ routes.use("/turnos", turnosRouter);
 routes.use("/veiculos", veiculosRouter);
 routes.use("/perguntas", perguntasRoutes);
 routes.use("/solicitacoes", solicitacoesRoutes);
+routes.use("/lancamentos", lancamentosRoutes);
 
 // exporta as rotas
 module.exports = routes;
