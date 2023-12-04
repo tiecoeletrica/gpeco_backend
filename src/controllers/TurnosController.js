@@ -58,12 +58,12 @@ class TurnosController {
     });
 
     checklist.map(async cl => {
-      const [tipo] = await knex("perguntas")
+      const [pergunta] = await knex("perguntas")
         .select("tipo")
         .where({ id: cl })
 
       await knex("checklists").insert({
-        tipo_checklist: tipo,
+        tipo_checklist: pergunta.tipo,
         pergunta_id: cl,
         turno_id: idTurno
       })

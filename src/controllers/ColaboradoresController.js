@@ -44,7 +44,7 @@ class ColaboradoresController {
     }
 
     async update(request, response) {
-        const {nome, email, senha, senhaAntiga, status, cpf, equipe_id} = request.body
+        const {nome, email, senha, senha_antiga, status, cpf, equipe_id} = request.body
         const {id} = request.params;
         
         const [colaborador] = await knex("colaboradores").where({id})
@@ -59,12 +59,12 @@ class ColaboradoresController {
         colaborador.cpf = cpf ?? colaborador.cpf
         colaborador.equipe_id = equipe_id ?? colaborador.equipe_id
         
-        if(!senha || !senhaAntiga){
+        if(!senha || !senha_antiga){
             throw new AppError("Informe a senha antiga e a senha nova")
         }
 
         
-        const comparacaoSenha = await compare(senhaAntiga,colaborador.senha)
+        const comparacaoSenha = await compare(senha_antiga,colaborador.senha)
         
         if(!comparacaoSenha){
             throw new AppError("A senha atual não confere com a atual")

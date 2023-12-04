@@ -2,18 +2,20 @@
 const { Router } = require("express");
 
 //rota para a rota do usuário
-const  autenticacaoRoutes  = require("./autenticacao.routes");
-const  colaboradoresRouter  = require("./colaboradores.routes");
-const  equipesRouter = require("./equipes.routes")
-const  obrasRouter = require("./obras.routes")
-const  obras_turnosRouter = require("./obras_turnos.routes")
-const  programacoesRouter = require("./programacoes.routes")
-const  servicosRouter = require("./servicos.routes")
-const  turnosRouter = require("./turnos.routes")
-const  veiculosRouter = require("./veiculos.routes")
+const autenticacaoRoutes = require("./autenticacao.routes");
+const colaboradoresRouter = require("./colaboradores.routes");
+const equipesRouter = require("./equipes.routes")
+const obrasRouter = require("./obras.routes")
+const obras_turnosRouter = require("./obras_turnos.routes")
+const programacoesRouter = require("./programacoes.routes")
+const servicosRouter = require("./servicos.routes")
+const turnosRouter = require("./turnos.routes")
+const veiculosRouter = require("./veiculos.routes")
 const perguntasRoutes = require("./perguntas.routes")
 const solicitacoesRoutes = require("./solicitacoes.routes")
 const lancamentosRoutes = require("./lancamentos.routes")
+const checklists_aprRoutes = require("./checklists_apr.routes")
+
 
 
 //insere a constante em um "app", nesse caso routes
@@ -32,6 +34,7 @@ routes.use("/veiculos", veiculosRouter);
 routes.use("/perguntas", perguntasRoutes);
 routes.use("/solicitacoes", solicitacoesRoutes);
 routes.use("/lancamentos", lancamentosRoutes);
+routes.use("/checklists_apr", checklists_aprRoutes)
 
 // exporta as rotas
 module.exports = routes;

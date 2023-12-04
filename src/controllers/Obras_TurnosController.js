@@ -60,13 +60,11 @@ class Obras_TurnosController {
 
     const [testeObra] = await knex("obras").where({ id: obra_id })
     const [testeTurno] = await knex("turnos").where({ id: turno_id })
+    const [testeObraLancada] = await knex("obras_turnos").where({ turno_id, obra_id }).whereNot({id})
 
     if (!testeObra) throw new AppError("Obra não encontrada")
     if (!testeTurno) throw new AppError("Turno não encontrada")
-
-    const [testeObraLancada] = await knex("obras_turnos").where({ turno_id, obra_id }).whereNot({id})
-    console.log(testeObraLancada)
-    if (testeObraLancada) throw new AppError("Essa obra já está lançada nesse turno")
+    if (!testeObraLancada) throw new AppError("Essa obra já está lançada nesse turno")
 
     obra_turno.obra_id = obra_id ?? obra_turno.obra_id
     obra_turno.turno_id = turno_id ?? obra_turno.turno_id

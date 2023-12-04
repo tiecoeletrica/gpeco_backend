@@ -27,7 +27,7 @@ class AutenticacaoController {
             expiresIn
         })
         
-        return response.json({token});
+        return response.json({colaborador,token});
     }
 
     
