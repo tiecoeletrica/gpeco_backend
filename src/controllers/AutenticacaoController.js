@@ -21,7 +21,7 @@ class AutenticacaoController {
 
         const passwordMatched = await compare(senha, colaborador.senha)
 
-        if (!passwordMatched) return response.status(401).json("Erro para rafa")
+        if (!passwordMatched) return response.status(401).json("Email e/ou senha incorreta")
 
         const { secret, expiresIn } = authConfig.jwt
         const token = sign({}, secret, {

@@ -4,26 +4,46 @@ const AppError = require("../utils/AppError") //importa biblioteca de erros
 
 class Checklists_aprController {
     async create(request, response) {
-        const { tipo, pergunta_id, turno_id, atividade, obras_turnos_id, medida_id } = request.body
+        const { tipo, pergunta_id, turno_id, atividade, obras_turnos_id, medida_ids, pergunta_ids, fotos_turno } = request.body
 
         switch (tipo) {
             case 'apr':
-                if (!pergunta_id || !medida_id || !obras_turnos_id || !atividade) throw new AppError("Há algum parâmetro nulo")
+                if (!pergunta_ids || !medida_ids || !obras_turnos_id || !atividade) throw new AppError("Há algum parâmetro nulo")
 
-                const [testePergunta] = await knex("perguntas").where({ id: pergunta_id })
-                const [testeMedida] = await knex("perguntas").where({ id: medida_id })
+                const perguntas = pergunta_ids.split(",").map(id => Number(id))
+                const medidas = medida_ids.split(",").map(id => Number(id))
+
+                await Promise.all(perguntas.map(async pergunta => {
+                    const [testePergunta] = await knex("perguntas").where({ id: pergunta })
+                    if (!testePergunta) throw new AppError(`Id ${pergunta} de pergunta não localizado`)
+                }))
+
+                await Promise.all(medidas.map(async medida => {
+                    const [testeMedida] = await knex("perguntas").where({ id: medida })
+                    if (!testeMedida) throw new AppError(`Id ${medida} de medida não localizado`)
+                }))
+
                 const [testeObras_Turnos] = await knex("obras_turnos").where({ id: obras_turnos_id })
+                if (!testeObras_Turnos) throw new AppError(`Id ${obras_turnos_id} de obras_turnos não localizado`)
 
-                if (!testePergunta) throw new AppError("Id de pergunta não localizado")
-                if (!testeMedida) throw new AppError("Id de medida não localizado")
-                if (!testeObras_Turnos) throw new AppError("Id de obras_turnos não localizado")
+                const [apr] = await knex("aprs").where({ obras_turnos_id })
+                if (apr) throw new AppError("Essa obra já possui apr")
 
                 await knex("aprs").insert({
                     atividade,
                     obras_turnos_id,
-                    pergunta_id,
-                    medida_id
+                    pergunta_ids,
+                    medida_ids
                 })
+
+                fotos_turno.map(async foto => {
+                    await knex("fotos").insert({
+                        tipo: foto.tipo,
+                        link_drive: foto.link_drive,
+                        turno_id: testeObras_Turnos.turno_id
+                    })
+                })
+
                 break;
             case 'smc':
             case 'veicular':
@@ -56,8 +76,8 @@ class Checklists_aprController {
         if (!turno_id && !obras_turnos_id) throw new AppError("Enviei como parametro de query obras_turnos_id ou turnos_id")
 
         if (!turno_id) {
-            var pergunta_apr = await knex("aprs").where({ obras_turnos_id })
-        } else if (!obras_turnos_id) pergunta_apr = await knex("checklists").where({ turno_id })
+            var pergunta_apr = await knex("aprs").where({ obras_turnos_id }).select("atividade")
+        } else if (!obras_turnos_id) pergunta_apr = await knex("checklists").where({ turno_id }).select(["tipo_checklist"]).distinct()
 
         response.status(200).json(pergunta_apr);
     }
@@ -67,18 +87,65 @@ class Checklists_aprController {
 
         switch (tipo) {
             case 'apr':
-                const [apr] = await knex("aprs").where({ id })
-                if (!apr) throw new AppError("Id de APR não encontrado")
+                const [apr] = await knex("aprs").where({ obras_turnos_id: id })
+                if (!apr) throw new AppError("Apr não encontrada para essa obra")
 
-                const [{ data }] = await knex("aprs")
-                    .leftJoin("obras_turnos", "obras_turnos.id", "aprs.obras_turnos_id")
-                    .leftJoin("turnos", "turnos.id", "obras_turnos.turno_id")
+                const arrayRiscos = apr.pergunta_ids.split(",").map(pergunta => Number(pergunta))
+                var riscos = await knex("perguntas")
+                    .whereIn("id", arrayRiscos)
+                    .select("categoria")
+                    .distinct()
+
+                riscos = riscos.map(risco => risco.categoria)
+
+                riscos = await Promise.all(riscos.map(async risco => {
+                    const auxPerguntas = await knex("perguntas")
+                        .whereIn("id", arrayRiscos)
+                        .andWhere("categoria", risco)
+                        .select("pergunta_resposta")
+
+                    const result = {};
+                    result[risco] = auxPerguntas.map(item => item.pergunta_resposta);
+                    return result;
+                }))
+
+                const arrayMedidas = apr.medida_ids.split(",").map(pergunta => Number(pergunta))
+                var medidas = await knex("perguntas")
+                    .whereIn("id", arrayMedidas)
+                    .select("categoria")
+                    .distinct()
+
+                medidas = medidas.map(medida => medida.categoria)
+
+                medidas = await Promise.all(medidas.map(async medida => {
+                    const auxPerguntas = await knex("perguntas")
+                        .whereIn("id", arrayMedidas)
+                        .andWhere("categoria", medida)
+                        .select("pergunta_resposta")
+
+                    const result = {};
+                    result[medida] = auxPerguntas.map(item => item.pergunta_resposta);
+                    return result;
+                }))
+
+                var resultado = { riscos, medidas }
+
+
+                break;
+            case 'smc':
+            case 'veicular':
+            case 'epi':
+                const [testeChecklist] = await knex("checklists").where({ turno_id: id, tipo_checklist: tipo })
+                if (!testeChecklist) throw new AppError(`Checklist ${tipo} não encontrado para essa obra`)
+
+                const [{ data }] = await knex("turnos")
                     .select(["turnos.data"])
-                    .where("aprs.id", id)
+                    .where({ id })
 
                 console.log(data)
-                var perguntas = await knex("perguntas")
-                    .where({ tipo: "apr" })
+                const perguntas = await knex("perguntas")
+                    .select("pergunta_resposta")
+                    .where({ tipo })
                     .andWhere((builder) =>
                         builder
                             .where("data_inicial", "<", data + " 00:00:00")
@@ -89,17 +156,25 @@ class Checklists_aprController {
                             )
                     );
 
-                break;
-            case 'smc':
-            case 'veicular':
-            case 'epi':
+                var inconsistencias = await knex("checklists")
+                    .where({ tipo_checklist: tipo })
+                    .andWhere("turno_id", id)
+                    .select("pergunta_id")
+
+                inconsistencias = await Promise.all(inconsistencias.map(async inc => {
+                    const [result] = await knex("perguntas").where({ id: inc.pergunta_id }).select("pergunta_resposta")
+                    return result
+                }))
+
+                var resultado = { perguntas, inconsistencias }
+
 
                 break;
             default:
                 throw new AppError("Tipo de relatório não cadastrado")
         }
 
-        response.status(200).json(perguntas)
+        response.status(200).json(resultado)
     }
 }
 
