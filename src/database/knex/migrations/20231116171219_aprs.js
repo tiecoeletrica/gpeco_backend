@@ -3,8 +3,8 @@ exports.up = (knex) =>
     table.bigIncrements("id");
     table.string("atividade").notNullable();
     table.bigInteger("obras_turnos_id").references("id").inTable("obras_turnos").notNullable().onDelete("CASCADE");
-    table.bigInteger("pergunta_id").references("id").inTable("perguntas").notNullable();
-    table.bigInteger("medida_id").references("id").inTable("perguntas").notNullable().comment("medida tomada");
+    table.string("pergunta_ids").notNullable();
+    table.string("medida_ids").notNullable().comment("medida tomada");
   });
 
 exports.down = (knex) => knex.schema.dropTable("aprs");

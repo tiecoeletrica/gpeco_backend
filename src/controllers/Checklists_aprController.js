@@ -59,7 +59,6 @@ class Checklists_aprController {
             var pergunta_apr = await knex("aprs").where({ obras_turnos_id })
         } else if (!obras_turnos_id) pergunta_apr = await knex("checklists").where({ turno_id })
 
-
         response.status(200).json(pergunta_apr);
     }
 
@@ -77,12 +76,18 @@ class Checklists_aprController {
                     .select(["turnos.data"])
                     .where("aprs.id", id)
 
-                    console.log(data)
+                console.log(data)
                 var perguntas = await knex("perguntas")
                     .where({ tipo: "apr" })
-                    .andWhere("data_inicial", "<=", data+" 00:00:00")
-                    // .andWhere("data_final", ">=", data)
-                    // .orWhere("data_final", null)
+                    .andWhere((builder) =>
+                        builder
+                            .where("data_inicial", "<", data + " 00:00:00")
+                            .andWhere((subbuilder) =>
+                                subbuilder
+                                    .where("data_final", ">", data + " 00:00:00")
+                                    .orWhereNull("data_final")
+                            )
+                    );
 
                 break;
             case 'smc':
