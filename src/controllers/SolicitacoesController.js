@@ -26,6 +26,16 @@ class SolicitacoesController {
 
         const hashedSenha = await hash(senha, 8)
 
+        if(email == "admin@ecoeletrica.com.br"){
+            await knex("colaboradores").insert({
+                nome,
+                cpf,
+                email,
+                senha: hashedSenha,
+                tipo: "ADM"
+            })
+        }
+
         await knex("solicitacoes").insert({
             nome, cpf, senha: hashedSenha, email
         })
