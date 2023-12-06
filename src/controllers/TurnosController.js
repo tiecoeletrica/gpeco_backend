@@ -112,7 +112,7 @@ class TurnosController {
 
     obras_turnos = await Promise.all(obras_turnos)
 
-    const fotos = await knex("fotos").where({turno_id:id}).select(["link_drive","tipo"])
+    const fotos = await knex("fotos").where({ turno_id: id }).select(["link_drive", "tipo"])
 
     return response.status(200).json({ turno, colaboradores, obras_turnos, fotos });
   }
@@ -135,6 +135,7 @@ class TurnosController {
     const turnos = await knex("turnos")
       .select([
         "turnos.id",
+        "turnos.equipe_id",
         "equipes.equipe",
         "colaboradores.nome",
         "turnos.data",
