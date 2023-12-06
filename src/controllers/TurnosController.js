@@ -98,16 +98,6 @@ class TurnosController {
     const colaboradores = []
     colaboradoresOb.map(cola => colaboradores.push(cola.nome))
 
-    // const obras_turnos = await knex("obras_turnos")
-    //   .fullOuterJoin("obras", "obras.id", "obras_turnos.obra_id")
-    //   .fullOuterJoin(
-    //     "lancamentos",
-    //     "lancamentos.obras_turnos_id",
-    //     "obras_turnos.id"
-    //   )
-    //   .fullOuterJoin("servicos", "servicos.id", "lancamentos.servico_id")
-    //   .where("obras_turnos.turno_id", id);
-
     var obras_turnos = await knex("obras_turnos")
       .where({ turno_id: id });
 
@@ -122,7 +112,9 @@ class TurnosController {
 
     obras_turnos = await Promise.all(obras_turnos)
 
-    return response.status(200).json({ turno, colaboradores, obras_turnos });
+    const fotos = await knex("fotos").where({turno_id:id}).select(["link_drive","tipo"])
+
+    return response.status(200).json({ turno, colaboradores, obras_turnos, fotos });
   }
 
   async delete(request, response) {

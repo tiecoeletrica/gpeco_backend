@@ -40,7 +40,8 @@ class Checklists_aprController {
                     await knex("fotos").insert({
                         tipo: foto.tipo,
                         link_drive: foto.link_drive,
-                        turno_id: testeObras_Turnos.turno_id
+                        turno_id: testeObras_Turnos.turno_id,
+                        obras_turnos_id
                     })
                 })
 
@@ -128,7 +129,9 @@ class Checklists_aprController {
                     return result;
                 }))
 
-                var resultado = { riscos, medidas }
+                const fotos = await knex("fotos").where({obras_turnos_id:id}).select("link_drive")
+
+                var resultado = { riscos, medidas, fotos }
 
 
                 break;
