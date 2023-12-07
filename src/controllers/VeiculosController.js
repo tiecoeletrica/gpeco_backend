@@ -29,7 +29,7 @@ class VeiculosController {
   async show(request, response) {
     const { id } = request.params;
 
-    const veiculo = await knex("veiculos").where({ id });
+    const [veiculo] = await knex("veiculos").where({ id });
 
     return response.status(200).json(veiculo);
   }
