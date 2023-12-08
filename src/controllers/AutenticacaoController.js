@@ -8,7 +8,7 @@ const { sign } = require("jsonwebtoken")
 class AutenticacaoController {
     async create(request, response) {
         const { email, senha } = request.body
-
+        console.log(request.body)
         if (!email || !senha) throw new AppError("email e/ou senha estão vazios")
 
         const [colaborador] = await knex("colaboradores")
